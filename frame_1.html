@@ -1,0 +1,62 @@
+<html>
+	<meta http-equiv="refresh" content="30">
+	<h1> Solar Panel 1 </h1>
+	<h2> Status </h2>
+	<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+		<table style="width:100%" id="table_vertical">
+			<tr>
+				<th align="left" id=date> Date:</th>
+			</tr>
+			<tr>
+				<th align="left" id=power> Power: </th>
+			</tr>
+			<tr>
+				<th align="left" id=daily_yield> Daily Yield: </th>
+			</tr>
+			<tr>
+				<th align="left" id="total_yield"> Total Yield: </th>
+			</tr>
+		</table>
+		
+		<br>
+		
+		<h2> History </h2>
+			<table style="width:100%">
+				<tr>
+					<th> Date </th>
+					<th> Power </th>
+					<th> Daily Yield </th>
+					<th> Total Yield </th>
+				</tr>
+					<th> 0 </th>
+					<td id="t"> 0 </th>
+			</table>
+		</br>
+	<script>
+	var config = {
+    apiKey: "AIzaSyB_inMZruQbJUzueOSRqf0-zwbYoUnZqDA",
+    authDomain: "solar-capstone.firebaseapp.com",
+    databaseURL: "https://solar-capstone.firebaseio.com",
+    storageBucket: "solar-capstone.appspot.com",
+    messagingSenderId: "795077978671",
+};
+	firebase.initializeApp(config);
+	var database = firebase.database();
+		var refPV1 = database.ref('PV1').orderByKey();
+		refPV1.once('value', function(snapshot) {
+		
+			snapshot.forEach(function(childSnapshot){
+				var date = childSnapshot.val().Date;
+				var power = childSnapshot.val().Power;
+				var daily = childSnapshot.val().Daily_yield;
+				var total = childSnapshot.val().Total_yield;
+				document.getElementById("date").innerHTML = "Date: " + date;
+				document.getElementById("power").innerHTML = "Power: " + power;
+				document.getElementById("daily_yield").innerHTML = "Daily Yield: " + daily;
+				document.getElementById("total_yield").innerHTML = "Total Yield: " + total;
+			});
+		
+		});
+		
+	</script>
+</html>
