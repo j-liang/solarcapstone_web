@@ -1,6 +1,248 @@
 <html>
-	
-	<!-- Made by Johnson, Raphael and Adrian -->
+	<meta http-equiv="refresh" content="30">
+	<style>
+	*{
+		font-family: calibri;
+		background: LightSkyBlue;
+		line-height: 0.9;
+	}
+	</style>
 	<h1> Solar Panel 3 </h1>
+	<h2 id=status> Status </h2>
+	<h3> Port 1 - Inverters</h3>
+	<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+		<table style="width:100%" id="table_vertical">
+			<tr>
+				<th align="left" id=date> Date:</th>
+			</tr>
+			<tr>
+				<th align="left" id=batteryvolt> Battery Voltage: </th>
+			</tr>
+			<tr>
+				<th align="left" id=ACin> AC Input Voltage: </th>
+			</tr>
+			<tr>
+				<th align="left" id="ACout"> AC Output Voltage: </th>
+			</tr>
+		</table>
+		<body>
+		<h3> Port 2 - Charger Controllers</h3>
+		<table style="width:100%" id="table_vertical">
+			<tr>
+				<th align="left" id=date2> Date:</th>
+			</tr>
+			<tr>
+				<th align="left" id=batteryvolt2> Battery Voltage: </th>
+			</tr>
+			<tr>
+				<th align="left" id=power2> Power: </th>
+			</tr>
+			<tr>
+				<th align="left" id="ACin2"> AC Input Voltage: </th>
+			</tr>
+		</table>
+		
+		<h2 id=tday> History </h2>
+		
+		</body>
+	<script>
+	var config = {
+    apiKey: "AIzaSyB_inMZruQbJUzueOSRqf0-zwbYoUnZqDA",
+    authDomain: "solar-capstone.firebaseapp.com",
+    databaseURL: "https://solar-capstone.firebaseio.com",
+    storageBucket: "solar-capstone.appspot.com",
+    messagingSenderId: "795077978671",
+};
+	firebase.initializeApp(config);
+	var database = firebase.database();
+		var refPV3A = database.ref('PV3a').orderByKey();
+		var refPV3B = database.ref('PV3b').orderByKey();
+		
+		//These variables only pertain to Port 1 - Inverter
+		var date = [];
+		var batteryVoltA = [];
+		var ACInputIn = [];
+		var ACInputOut = [];
+		
+		//These variables only pertain to Port 2 - Charger Controllers
+		var dateB = [];
+		var batteryVoltB = [];
+		var power = [];
+		var ACInput = [];
+		
+		refPV3A.once('value', function(snapshot) {
+		
+		
+			snapshot.forEach(function(childSnapshot){
+				//Variable from Database
+				date.push(childSnapshot.val().Date);
+				batteryVoltA.push(childSnapshot.val().BatteryVolt);
+				ACInputIn.push(childSnapshot.val().VACin);
+				ACInputOut.push(childSnapshot.val().VACout);
+			
 
+				//Latest Data from Firebase
+				document.getElementById("date").innerHTML = "Date: " + date[date.length-1];
+				document.getElementById("batteryvolt").innerHTML = "Battery Voltage: " + batteryVoltA[batteryVoltA.length - 1] + " V";
+				document.getElementById("ACin").innerHTML = "AC Input Voltage: " + ACInputIn[ACInputIn.length-1] + " V";
+				document.getElementById("ACout").innerHTML = "AC Output Voltage: " + ACInputOut[ACInputOut.length-1] + " V";
+			
+			});
+			
+			refPV3B.once('value', function(snapshot) {
+		
+		
+			snapshot.forEach(function(childSnapshot){
+				//Variable from Database
+				//var date = childSnapshot.val().Date;
+				//power = power + childSnapshot.val().Power;
+				dateB.push(childSnapshot.val().Date);
+				batteryVoltB.push(childSnapshot.val().BatteryVoltage);
+				power.push(childSnapshot.val().Power);
+				ACInput.push(childSnapshot.val().VACin);
+			
+
+				//Latest Data from Firebase
+				document.getElementById("date2").innerHTML = "Date: " + dateB[dateB.length-1];
+				document.getElementById("batteryvolt2").innerHTML = "Battery Voltage: " + batteryVoltA[batteryVoltA.length - 1] + " V";
+				document.getElementById("power2").innerHTML = "Power: " + power[power.length-1] + " W";
+				document.getElementById("ACin2").innerHTML = "AC Input Voltage: " + ACInput[ACInput.length-1] + " V";
+			
+			});
+				
+			//document.write(power.length)
+				//console.log("length" + power.length);
+				
+				
+				table=document.createElement("table");
+				tagPortB=document.createElement("h4");
+				table.border=2;
+				table.cellPadding=1;
+				tableRow=document.createElement("tr");
+				tagTime=document.createElement("th");
+				tagBattery=document.createElement("th");
+				tagPower=document.createElement("th");
+				tagVACin=document.createElement("th");
+				
+				tagTime.textContent="Timestamp";
+				tagBattery.textContent="Battery Volt";
+				tagPower.textContent="Power";
+				tagVACin.textContent="VAC In";
+				
+				tableRow.appendChild(tagTime);
+				tableRow.appendChild(tagBattery);
+				tableRow.appendChild(tagPower);
+				tableRow.appendChild(tagVACin);
+
+				
+				table.appendChild(tableRow);
+				
+				portB = document.createTextNode("Port B");
+				tagPortB.appendChild(portB);
+				document.body.appendChild(tagPortB);
+				
+				for(i = (dateB.length-2); i > (dateB.length - 3); i--)
+				{
+					
+					tableRow=document.createElement("tr");
+					
+					tagtime=document.createElement("td");
+					tagtime.textContent=date[i];
+					
+					tagbattery=document.createElement("td");
+					tagbattery.textContent=batteryVoltB[i];
+					
+					tagpower=document.createElement("td");
+					tagpower.textContent=power[i];
+					
+					tagvacin=document.createElement("td");
+					tagvacin.textContent=ACInputIn[i];
+					
+					tableRow.appendChild(tagtime);
+					tableRow.appendChild(tagbattery);
+					tableRow.appendChild(tagpower);
+					tableRow.appendChild(tagvacin);
+					table.appendChild(tableRow);
+				}
+				
+				document.body.appendChild(table);  
+				
+		
+				var checkPower = 0;
+				checkPower = power[power.length - 1];
+				//console.log(power[power.length - 5]);
+				var active = "Active";
+				var green = active.fontcolor("green");
+				var inactive = "Inactive";
+				var red = inactive.fontcolor("red");
+				if(checkPower > 0){
+					document.getElementById("status").innerHTML = "Status: " + green;
+					//document.write("true");
+				}
+				else{
+					document.getElementById("status").innerHTML = "Status: " + red;
+					//document.write("false");
+				}
+				});
+				
+				table=document.createElement("table");
+				tagPortA=document.createElement("h4");
+				
+				table.border=2;
+				table.cellPadding=1;
+				tableRow=document.createElement("tr");
+				tagTime=document.createElement("th");
+				tagBattery=document.createElement("th");
+				tagVACin=document.createElement("th");
+				tagVACout=document.createElement("th");
+				
+				tagTime.textContent="Timestamp";
+				tagBattery.textContent="Battery Volt";
+				tagVACin.textContent="VAC In";
+				tagVACout.textContent="VAC Out";
+				
+				tableRow.appendChild(tagTime);
+				tableRow.appendChild(tagBattery);
+				tableRow.appendChild(tagVACin);
+				tableRow.appendChild(tagVACout);
+
+				
+				table.appendChild(tableRow);
+				
+				portA = document.createTextNode("Port A");
+				tagPortA.appendChild(portA);
+				document.body.appendChild(tagPortA);
+				
+				for(i = (date.length-2); i > (date.length - 3); i--)
+				{
+					
+					tableRow=document.createElement("tr");
+					
+					tagtime=document.createElement("td");
+					tagtime.textContent=date[i];
+					
+					tagbattery=document.createElement("td");
+					tagbattery.textContent=batteryVoltA[i];
+					
+					tagvacin=document.createElement("td");
+					tagvacin.textContent=ACInputIn[i];
+					
+					tagvacout=document.createElement("td");
+					tagvacout.textContent=ACInputOut[i];
+					
+					tableRow.appendChild(tagtime);
+					tableRow.appendChild(tagbattery);
+					tableRow.appendChild(tagvacin);
+					tableRow.appendChild(tagvacout);
+					table.appendChild(tableRow);
+				}
+				
+				document.body.appendChild(table);  
+			});
+		
+	</script>
+
+</html>
+		
+	</script>
 </html>

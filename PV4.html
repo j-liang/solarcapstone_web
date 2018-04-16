@@ -1,9 +1,17 @@
 <html>
-	<!-- Made by Johnson, Raphael and Adrian -->
 	<meta http-equiv="refresh" content="30">
+	<style>
+	*{
+		font-family: calibri;
+		background: LightSkyBlue;
+		line-height: 1;
+	}
+	</style>
 	<h1> Solar Panel 4 </h1>
-	<h2> Status </h2>
+	<h2 id=status> Status </h2>
+	<img src="humberlogo.png" height="60" width="299">
 	<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+		<br></br>
 		<table style="width:100%" id="table_vertical">
 			<tr>
 				<th align="left" id=date> Date:</th>
@@ -15,22 +23,10 @@
 				<th align="left" id=daily_yield> Daily Yield: </th>
 			</tr>
 			<tr>
-				<th align="left" id=total_yield> Total Yield: </th>
+				<th align="left" id="total_yield"> Total Yield: </th>
 			</tr>
 		</table>
 		
-		<br>
-			<table style="width:100%">
-				<tr>
-					<th> Date </th>
-					<th> Power </th>
-					<th> Daily Yield </th>
-					<th> Total Yield </th>
-				</tr>
-					<th> 0 </th>
-					<td id="t"> 0 </th>
-			</table>
-		</br>
 	<script>
 	var config = {
     apiKey: "AIzaSyB_inMZruQbJUzueOSRqf0-zwbYoUnZqDA",
@@ -41,22 +37,103 @@
 };
 	firebase.initializeApp(config);
 	var database = firebase.database();
-		var refPV1 = database.ref('PV4').orderByKey();
-		refPV1.once('value', function(snapshot) {
+		var refPV4 = database.ref('PV4').orderByKey();
+		var date = [];
+		var power = [];
+		var daily = [];
+		
+		refPV4.once('value', function(snapshot) {
+		
 		
 			snapshot.forEach(function(childSnapshot){
-				var date = childSnapshot.val().Date;
-				var power = childSnapshot.val().Power;
-				var daily = childSnapshot.val().Daily_yield;
+				//Variable from Database
+				date.push(childSnapshot.val().Date);
+				power.push(childSnapshot.val().Power);
+				daily.push(childSnapshot.val().Daily_yield);
 				var total = childSnapshot.val().Total_yield;
-				document.getElementById("date").innerHTML = "Date: " + date;
-				document.getElementById("power").innerHTML = "Power: " + power;
-				document.getElementById("daily_yield").innerHTML = "Daily Yield: " + daily;
+			
+				
+				
+				//Variable for History only retrieves time
+				//var time = date.slice(11, 19);
+				//var today = date.slice(0, 10);
+
+				//Latest Data from Firebase
+				document.getElementById("date").innerHTML = "Date: " + date[date.length-1];
+				document.getElementById("power").innerHTML = "Power: " + power[power.length - 1];
+				document.getElementById("daily_yield").innerHTML = "Daily Yield: " + daily[daily.length-1];
 				document.getElementById("total_yield").innerHTML = "Total Yield: " + total;
-			});
-		
+			
+			}); 
+			
+				//document.write(power.length)
+				//console.log("length" + power.length);
+				
+
+				table=document.createElement("table");
+				historyTag = document.createElement("h2");
+				table.border=2;
+				table.cellPadding=4;
+				tableRow=document.createElement("tr");
+				tagTime=document.createElement("th");
+				tagPower=document.createElement("th");
+				tagDaily_yield=document.createElement("th");
+				
+				
+				tagTime.textContent="Timestamp";
+				tagPower.textContent="Power";
+				tagDaily_yield.textContent="Daily yield";
+				historyNode = document.createTextNode("History");
+				
+				
+				tableRow.appendChild(tagTime);
+				tableRow.appendChild(tagPower);
+				tableRow.appendChild(tagDaily_yield);
+				historyTag.appendChild(historyNode);
+
+				
+				table.appendChild(tableRow);
+				document.body.appendChild(historyTag);
+
+				for(i = (power.length-1); i > (power.length - 9); i--)
+				{
+					
+					tableRow=document.createElement("tr");
+					
+					tagtime=document.createElement("td");
+					tagtime.textContent=date[i];
+					
+					tagpower=document.createElement("td");
+					tagpower.textContent=power[i];
+					tagdaily=document.createElement("td");
+					tagdaily.textContent=daily[i];
+					tableRow.appendChild(tagtime);
+					tableRow.appendChild(tagpower);
+					tableRow.appendChild(tagdaily);
+					table.appendChild(tableRow);
+				}
+				
+				document.body.appendChild(table);  
+
+				
+				var checkPower = 0;
+				checkPower = power[power.length - 1];
+				var active = "Active";
+				var green = active.fontcolor("green");
+				var inactive = "Inactive";
+				var red = inactive.fontcolor("red");
+				if(checkPower > "0 W"){
+					document.getElementById("status").innerHTML = "Status: " + green;
+				}
+				else{
+					document.getElementById("status").innerHTML = "Status: " + red;
+				}
 		});
 		
 	</script>
-	
+	<!--<script src="https://www.yr.no/place/Canada/Ontario/Toronto/external_box_small.js"></script><noscript><a href="https://www.yr.no/place/Canada/Ontario/Toronto/">yr.no: Forecast for Toronto</a></noscript>-->
+		<script src="http://www.yr.no/place/Canada/Ontario/Toronto/external_box_stripe.js"></script><noscript><a href="http://www.yr.no/place/Canada/Ontario/Toronto/">yr.no: Forecast for Toronto</a></noscript>
+</html>
+		
+	</script>
 </html>
