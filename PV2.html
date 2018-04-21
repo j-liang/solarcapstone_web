@@ -141,11 +141,11 @@
 				var offline = "Offline";
 				var white = offline.fontcolor("white");
 				
-				if(checkPower > "    0 W"){
-					document.getElementById("status").innerHTML = "Status: " + green;
-				}
-				else if(checkPower == "0"){
+				if(checkPower == "0"){
 					document.getElementById("status").innerHTML = "Status: " + white;
+				}
+				else if(checkPower > "    0 W"){
+					document.getElementById("status").innerHTML = "Status: " + green;
 				}
 				else{
 					document.getElementById("status").innerHTML = "Status: " + red;
