@@ -1,6 +1,8 @@
 <!-- Made by Johnson, Raphael and Adrian -->
 <html>
+	<!--refreshes the web page every 30 seconds, can change the value of content to refresh "x" amount of seconds-->
 	<meta http-equiv="refresh" content="30">
+	<!-- CSS to control the appearance of the web page -->
 	<style>
 	*{
 		font-family: calibri;
@@ -11,6 +13,7 @@
 	<h1> Solar Panel 1 </h1>
 	<h2 id=status> Status </h2> 
 	<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+		<!-- table for the current status (last Firebase query) -->
 		<table style="width:100%" id="table_vertical">
 			<tr>
 				<th align="left" id=date> Date:</th>
@@ -31,6 +34,7 @@
 		
 		</body>
 	<script>
+	<!--REQUIRED to connect to Firebase, acts as a key -->
 	var config = {
     apiKey: "AIzaSyB_inMZruQbJUzueOSRqf0-zwbYoUnZqDA",
     authDomain: "solar-capstone.firebaseapp.com",
@@ -49,36 +53,33 @@
 		
 		
 			snapshot.forEach(function(childSnapshot){
-				//Variable from Database
-				//var date = childSnapshot.val().Date;
-				//power = power + childSnapshot.val().Power;
+				//Retrieving variables from Database
 				date.push(childSnapshot.val().Date);
 				power.push(childSnapshot.val().Power);
 				daily.push(childSnapshot.val().Daily_yield);
 				var total = childSnapshot.val().Total_yield;
-			
-				
-				
-				//Variable for History only retrieves time
-				//var time = date.slice(11, 19);
-				//var today = date.slice(0, 10);
 				
 			
-				//Latest Data from Firebase
+				//Latest data from Firebase for those with length-1
 				document.getElementById("date").innerHTML = "Date: " + date[date.length-1];
 				document.getElementById("power").innerHTML = "Power: " + power[power.length - 1];
 				document.getElementById("daily_yield").innerHTML = "Daily Yield: " + daily[daily.length-1];
+				//Retrieves the total yield amount of power 
 				document.getElementById("total_yield").innerHTML = "Total Yield: " + total;
 			
 			}); 
-			
+				//Testing and debugging purposes
 				//document.write(power.length)
 				//console.log("length" + power.length);
 				
-
+				//Creates a table element for history (array) of entries
 				table=document.createElement("table");
+				
+				//Configurations set for the table
 				table.border=2;
 				table.cellPadding=4;
+				
+				//Creates the row and header elements for data in order to be pulled
 				tableRow=document.createElement("tr");
 				tagTime=document.createElement("th");
 				tagPower=document.createElement("th");
@@ -89,14 +90,15 @@
 				tagPower.textContent="Power";
 				tagDaily_yield.textContent="Daily yield";
 				
-				
+				//Applies and creates the header fields
 				tableRow.appendChild(tagTime);
 				tableRow.appendChild(tagPower);
 				tableRow.appendChild(tagDaily_yield);
 
-				
 				table.appendChild(tableRow);
-
+				
+				//A for loop which will retrieve the last 14 entries in the database and apply it into a table
+				
 				for(i = (power.length-1); i > (power.length - 14); i--)
 				{
 					
@@ -116,6 +118,11 @@
 				}
 				document.body.appendChild(table);  
 				
+				/*Checks the power field and compares the following statement.
+				  If power is greater than 0 status is equal to Active (receiving power)
+				  less than 0 is equal to Inactive (not receiving power)
+				  equal to 0 is Offline (the web page is down)
+				*/
 				var checkPower = 0;
 				checkPower = power[power.length - 1];
 				//console.log(power[power.length - 5]);
@@ -123,9 +130,15 @@
 				var green = active.fontcolor("green");
 				var inactive = "Inactive";
 				var red = inactive.fontcolor("red");
+				var offline = "Offline"
+				var white = offline.fontcolor("white");
+				
 				if(checkPower > "0 W"){
 					document.getElementById("status").innerHTML = "Status: " + green;
 					//document.write("true");
+				}
+				else if(checkPower == "0"){
+					document.getElementById("status").innerHTML = "Status: " + white;
 				}
 				else{
 					document.getElementById("status").innerHTML = "Status: " + red;

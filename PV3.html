@@ -114,11 +114,15 @@
 			//document.write(power.length)
 				//console.log("length" + power.length);
 				
-				
+				//Creates a table element for history (array) of entries
 				table=document.createElement("table");
 				tagPortB=document.createElement("h4");
+				
+				//Configurations set for the table
 				table.border=2;
 				table.cellPadding=1;
+				
+				//Creates the row and header elements for data in order to be pulled
 				tableRow=document.createElement("tr");
 				tagTime=document.createElement("th");
 				tagBattery=document.createElement("th");
@@ -142,7 +146,8 @@
 				tagPortB.appendChild(portB);
 				document.body.appendChild(tagPortB);
 				
-				for(i = (dateB.length-2); i > (dateB.length - 8); i--)
+				//A for loop which will retrieve the last 1 entries in the database and apply it into a table for Port B (charger controller)
+				for(i = (dateB.length-2); i > (dateB.length - 3); i--)
 				{
 					
 					tableRow=document.createElement("tr");
@@ -168,7 +173,13 @@
 				
 				document.body.appendChild(table);  
 				
-		
+							
+				/*Checks the power field and compares the following statement.
+				  If power is greater than 0 status is equal to Active (receiving power)
+				  less than 0 is equal to Inactive (not receiving power)
+				  equal to 0 is Offline (the web page is down)
+				*/
+				
 				var checkPower = 0;
 				checkPower = power[power.length - 1];
 				//console.log(power[power.length - 5]);
@@ -176,9 +187,15 @@
 				var green = active.fontcolor("green");
 				var inactive = "Inactive";
 				var red = inactive.fontcolor("red");
+				var offline = "Offline"
+				var white = offline.fontcolor("white");
+				
 				if(checkPower > 0){
 					document.getElementById("status").innerHTML = "Status: " + green;
 					//document.write("true");
+				}
+				else if(checkPower == 0){
+					document.getElementById("status").innerHTML = "Status: " + white;
 				}
 				else{
 					document.getElementById("status").innerHTML = "Status: " + red;
@@ -214,7 +231,8 @@
 				tagPortA.appendChild(portA);
 				document.body.appendChild(tagPortA);
 				
-				for(i = (date.length-2); i > (date.length - 8); i--)
+				//A for loop which will retrieve the last 1 entries in the database and apply it into a table for Port A (inverters)
+				for(i = (date.length-2); i > (date.length - 3); i--)
 				{
 					
 					tableRow=document.createElement("tr");

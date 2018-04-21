@@ -53,13 +53,8 @@
 				daily.push(childSnapshot.val().Daily_yield);
 				var total = childSnapshot.val().Total_yield;
 			
-				
-				
-				//Variable for History only retrieves time
-				//var time = date.slice(11, 19);
-				//var today = date.slice(0, 10);
 
-				//Latest Data from Firebase
+				//Latest data from Firebase for those with length-1
 				document.getElementById("date").innerHTML = "Date: " + date[date.length-1];
 				document.getElementById("power").innerHTML = "Power: " + power[power.length - 1];
 				document.getElementById("daily_yield").innerHTML = "Daily Yield: " + daily[daily.length-1];
@@ -70,11 +65,18 @@
 				//document.write(power.length)
 				//console.log("length" + power.length);
 				
-
+				//Creates a table element for history (array) of entries
 				table=document.createElement("table");
+				//Creates a history element for heading
 				historyTag = document.createElement("h2");
+				//Creates a paragraph heading for description of who worked on this project
+				group = document.createElement("p");
+				
+				//Configurations set for the table
 				table.border=2;
 				table.cellPadding=4;
+				
+				//Creates the row and header elements for data in order to be pulled
 				tableRow=document.createElement("tr");
 				tagTime=document.createElement("th");
 				tagPower=document.createElement("th");
@@ -85,18 +87,21 @@
 				tagPower.textContent="Power";
 				tagDaily_yield.textContent="Daily yield";
 				historyNode = document.createTextNode("History");
+				groupNode = document.createTextNode("Developed by Adrian Caprini, Raphael Najera, and Johnson Liang");
 				
-				
+				//Applies and creates the header fields
 				tableRow.appendChild(tagTime);
 				tableRow.appendChild(tagPower);
 				tableRow.appendChild(tagDaily_yield);
 				historyTag.appendChild(historyNode);
+				group.appendChild(groupNode);
 
 				
 				table.appendChild(tableRow);
 				document.body.appendChild(historyTag);
 
-				for(i = (power.length-1); i > (power.length - 9); i--)
+				//A for loop which will retrieve the last 8 entries in the database and apply it into a table
+				for(i = (power.length-1); i > (power.length - 8); i--)
 				{
 					
 					tableRow=document.createElement("tr");
@@ -115,7 +120,14 @@
 				}
 				
 				document.body.appendChild(table);  
-
+				document.body.appendChild(group);
+							
+							
+				/*Checks the power field and compares the following statement.
+				  If power is greater than 0 status is equal to Active (receiving power)
+				  less than 0 is equal to Inactive (not receiving power)
+				  equal to 0 is Offline (the web page is down)
+				*/
 				
 				var checkPower = 0;
 				checkPower = power[power.length - 1];
@@ -123,8 +135,14 @@
 				var green = active.fontcolor("green");
 				var inactive = "Inactive";
 				var red = inactive.fontcolor("red");
+				var offline = "Offline"
+				var white = offline.fontcolor("white");
+				
 				if(checkPower > "0 W"){
 					document.getElementById("status").innerHTML = "Status: " + green;
+				}
+				else if(checkPower == "0"){
+					document.getElementById("status").innerHTML = "Status: " + white;
 				}
 				else{
 					document.getElementById("status").innerHTML = "Status: " + red;

@@ -66,7 +66,7 @@
 				
 				
 				
-				//Latest Data from Firebase
+				//Latest data from Firebase for those with length-1
 				document.getElementById("date").innerHTML = "Date: " + date[date.length-1];
 				document.getElementById("power").innerHTML = "Power: " + power[power.length - 1];
 				document.getElementById("daily_yield").innerHTML = "Daily Yield: " + daily[daily.length-1];
@@ -78,9 +78,14 @@
 				console.log("length" + power.length);
 				
 
+				//Creates a table element for history (array) of entries
 				table=document.createElement("table");
+				
+				//Configurations set for the table
 				table.border=2;
 				table.cellPadding=4;
+				
+				//Creates the row and header elements for data in order to be pulled
 				tableRow=document.createElement("tr");
 				tagTime=document.createElement("th");
 				tagPower=document.createElement("th");
@@ -91,13 +96,15 @@
 				tagPower.textContent="Power";
 				tagDaily_yield.textContent="Daily yield";
 				
-				
+				//Applies and creates the header fields
 				tableRow.appendChild(tagTime);
 				tableRow.appendChild(tagPower);
 				tableRow.appendChild(tagDaily_yield);
 
 				
 				table.appendChild(tableRow);
+				
+				//A for loop which will retrieve the last 14 entries in the database and apply it into a table
 
 				for(i = (power.length-1); i > (power.length - 14); i--)
 				{
@@ -118,14 +125,27 @@
 				}
 				document.body.appendChild(table);  
 				
+							
+				/*Checks the power field and compares the following statement.
+				  If power is greater than 0 status is equal to Active (receiving power)
+				  less than 0 is equal to Inactive (not receiving power)
+				  equal to 0 is Offline (the web page is down)
+				*/
+				
 				var checkPower = 0;
 				checkPower = power[power.length - 1];
 				var active = "Active";
 				var green = active.fontcolor("green");
 				var inactive = "Inactive";
 				var red = inactive.fontcolor("red");
+				var offline = "Offline"
+				var white = offline.fontcolor("white");
+				
 				if(checkPower > "    0 W"){
 					document.getElementById("status").innerHTML = "Status: " + green;
+				}
+				else if(checkPower == 0){
+					document.getElementById("status").innerHTML = "Status: " + white;
 				}
 				else{
 					document.getElementById("status").innerHTML = "Status: " + red;
